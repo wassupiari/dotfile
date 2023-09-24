@@ -13,8 +13,7 @@ require("plugins.comment")
 require("plugins.bufferline")
 require("plugins.lualine")
 require("plugins.alpha")
-
-
+require("plugins.markdown")
 -- lsp
 require("plugins.lsp")
 -- colorscheme
