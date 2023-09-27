@@ -1,60 +1,85 @@
 -- options settings
-local set = vim.opt
-local g = vim.g
+
 local cmd = vim.cmd
 
+local g            = vim.g
+local opt          = vim.opt
 
+-- leader
+g.mapleader        = " "
 
-set.backup = false
-set.clipboard = set.clipboard + "unnamedplus"
-set.cmdheight = 2
-set.completeopt = { "menuone", "noselect", "noinsert" }
-set.conceallevel = 0
-set.fileencoding = "utf-8"
-set.hlsearch = true
-set.ignorecase = true
-set.mouse = "a"
-set.pumheight = 10
-set.showmode = false
-set.showtabline = 2
-set.smartcase = true
-set.smartindent = true
-set.splitbelow = true
-set.splitright = true
-set.swapfile = false
-set.timeoutlen = 1000
-set.undofile = true
-set.updatetime = 300
-set.writebackup = false
-set.expandtab = true
-set.shiftwidth = 2
-set.tabstop = 2
-set.cursorline = true
-set.number = true
-set.relativenumber = true
-set.numberwidth = 4
-set.signcolumn = "yes"
-set.wrap = false
-set.scrolloff = 8
-set.sidescrolloff = 8
-set.guifont = "monospace:h17"
+-- colors
+opt.termguicolors  = true
 
+-- encoding
+opt.encoding       = "utf-8"
+opt.fileencoding   = "utf-8"
+opt.fileencodings  = "utf-8,ucs-bom,gb18030,gbk,gb2312,cp936"
 
--- from another file
---
---
+-- default position
+opt.scrolloff      = 5
 
-set.hidden = true
-set.inccommand = "split"
-set.shell = "bash"
-set.list = true
-set.listchars = { space = "⋅", tab = "| ", eol = "↴" }
-set.undofile = true
-set.undodir = os.getenv("HOME") .. "/.local/state/nvim/undo"
+-- ex line
+opt.ls             = 0
+opt.ch             = 0
+
+-- gutter
+opt.number         = true
+opt.numberwidth    = 2
+opt.signcolumn     = "yes:2"
+opt.relativenumber = true
+
+-- search
+opt.incsearch      = true
+opt.ignorecase     = true
+opt.smartcase      = true
+
+-- indent
+opt.tabstop        = 4
+opt.softtabstop    = 2
+opt.shiftwidth     = 2
+opt.expandtab      = true
+opt.autoindent     = true
+opt.smartindent    = true
+opt.smarttab       = true
+
+-- mouse, clipboard
+opt.mouse          = "a"
+opt.clipboard      = "unnamedplus"
+
+-- backup
+opt.swapfile       = false
+opt.undofile       = true
+opt.backup         = false
+opt.writebackup    = false
+opt.undodir        = os.getenv("HOME") .. "/.local/state/nvim/undo"
+
+-- wrapping
+opt.wrap           = true
+opt.hidden         = true
+opt.cursorline     = true
+
+-- splits
+opt.inccommand     = "nosplit"
+opt.splitbelow     = true
+opt.splitright     = true
+
+-- line symbols
+opt.list           = true
+opt.listchars      = { space = "⋅", tab = "| ", eol = "↴" }
+
+-- folding
+opt.foldmethod     = "indent"
+opt.foldenable     = false
+
+-- misc
+opt.updatetime     = 50
+opt.pumheight      = 10
+opt.completeopt    = "menuone,noinsert,noselect"
 -- patterns to ignore during file-navigation
-set.wildignore = set.wildignore + "*.o,*.rej,*.so"
+opt.wildignore = opt.wildignore + "*.o,*.rej,*.so"
 -- faster scrolling
-set.lazyredraw = true
+opt.lazyredraw = true
 
 
 -- remove whitespace on save
