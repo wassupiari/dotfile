@@ -59,6 +59,7 @@ return packer.startup(function(use)
     use "L3MON4D3/LuaSnip"             --snippet engine
     use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
 
+    use { "junegunn/fzf", run = "fzf#install()" }
     -- LSP
     use {
         "neovim/nvim-lspconfig",
@@ -75,9 +76,32 @@ return packer.startup(function(use)
     }
 
     -- Telescope
-    use { 'nvim-telescope/telescope.nvim', tag = '0.1.3' }
-    use 'nvim-telescope/telescope-media-files.nvim'
+   use {
+    "nvim-telescope/telescope.nvim",
+    requires = {
+      "nvim-lua/popup.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope-file-browser.nvim",
+      "nvim-telescope/telescope-fzy-native.nvim",
+      "nvim-telescope/telescope-project.nvim",
+    },
+    config = function()
+      require("plugins.telescope")
+    end,
+  }
 
+  use {
+    "nvim-telescope/telescope-fzf-native.nvim",
+    run = "make",
+  }
+
+  use {
+    "paopaol/telescope-git-diffs.nvim",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+    },
+  }
 
     -- Treesitter
     use {

@@ -1,104 +1,120 @@
-local status_ok, telescope = pcall(require, "telescope")
-if not status_ok then
-    return
+local ok, telescope = pcall(require, "telescope")
+if not ok then
+  return
 end
 
-telescope.load_extension('media_files')
+local sorters, actions, previewers, builtin = require("telescope.sorters"), require("telescope.actions"),
+    require("telescope.previewers"), require("telescope.builtin")
 
-local actions = require "telescope.actions"
+local rip_grep_config = {
+  "rg",
+  "--no-heading",
+  "--with-filename",
+  "--line-number",
+  "--column",
+  "--smart-case",
+}
 
 telescope.setup {
-    defaults = {
-
-        prompt_prefix = " ",
-        selection_caret = " ",
-        path_display = { "smart" },
-
-        mappings = {
-            i = {
-                ["<C-n>"] = actions.cycle_history_next,
-                ["<C-p>"] = actions.cycle_history_prev,
-
-                ["<C-j>"] = actions.move_selection_next,
-                ["<C-k>"] = actions.move_selection_previous,
-
-                ["<C-c>"] = actions.close,
-
-                ["<Down>"] = actions.move_selection_next,
-                ["<Up>"] = actions.move_selection_previous,
-
-                ["<CR>"] = actions.select_default,
-                ["<C-x>"] = actions.select_horizontal,
-                ["<C-v>"] = actions.select_vertical,
-                ["<C-t>"] = actions.select_tab,
-
-                ["<C-u>"] = actions.preview_scrolling_up,
-                ["<C-d>"] = actions.preview_scrolling_down,
-
-                ["<PageUp>"] = actions.results_scrolling_up,
-                ["<PageDown>"] = actions.results_scrolling_down,
-
-                ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-                ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-                ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-                ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-                ["<C-l>"] = actions.complete_tag,
-                ["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
-            },
-
-            n = {
-                ["<esc>"] = actions.close,
-                ["<CR>"] = actions.select_default,
-                ["<C-x>"] = actions.select_horizontal,
-                ["<C-v>"] = actions.select_vertical,
-                ["<C-t>"] = actions.select_tab,
-
-                ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-                ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-                ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-                ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-
-                ["j"] = actions.move_selection_next,
-                ["k"] = actions.move_selection_previous,
-                ["H"] = actions.move_to_top,
-                ["M"] = actions.move_to_middle,
-                ["L"] = actions.move_to_bottom,
-
-                ["<Down>"] = actions.move_selection_next,
-                ["<Up>"] = actions.move_selection_previous,
-                ["gg"] = actions.move_to_top,
-                ["G"] = actions.move_to_bottom,
-
-                ["<C-u>"] = actions.preview_scrolling_up,
-                ["<C-d>"] = actions.preview_scrolling_down,
-
-                ["<PageUp>"] = actions.results_scrolling_up,
-                ["<PageDown>"] = actions.results_scrolling_down,
-
-                ["?"] = actions.which_key,
-            },
+  defaults = {
+    prompt_position = "top",
+    initial_mode = "insert",
+    prompt_prefix = "  ",
+    selection_caret = "❯ ",
+    sorting_strategy = "ascending",
+    color_devicons = true,
+    file_sorter = sorters.get_fzy_sorter,
+    generic_sorter = sorters.get_fzy_sorter,
+    file_previewer = previewers.vim_buffer_cat.new,
+    grep_previewer = previewers.vim_buffer_vimgrep.new,
+    qflist_previewer = previewers.vim_buffer_qflist.new,
+    vimgrep_arguments = rip_grep_config,
+    mappings = {
+      i = {
+        ["<Leader>q"] = actions.close,
+        ["<C-j>"] = actions.move_selection_next,
+        ["<C-k>"] = actions.move_selection_previous
+      },
+    },
+    file_ignore_patterns = {
+      ".git",
+      "vendor",
+      "node_modules",
+      "__pycache__",
+      ".pytest_cache",
+    }
+  },
+  pickers = {
+    find_files = {
+      theme = "dropdown",
+      hidden = true,
+      no_ignore = true,
+    },
+    buffers = {
+      layout_config = { preview_width = 0.5 },
+      ignore_current_buffer = true,
+      sort_mru = true,
+      mappings = {
+        i = {
+          ["<c-d>"] = actions.delete_buffer,
         },
+        n = {
+          ["<c-d>"] = actions.delete_buffer,
+        },
+      },
     },
-    -- pickers = {
-    -- Default configuration for builtin pickers goes here:
-    -- picker_name = {
-    --   picker_config_key = value,
-    --   ...
-    -- }
-    -- Now the picker_config_key will be applied every time you call this
-    -- builtin picker
-    -- },
-    extensions = {
-        media_files = {
-            -- filetypes whitelist
-            -- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
-            filetypes = { "png", "webp", "jpg", "jpeg" },
-            find_cmd = "rg" -- find command (defaults to `fd`)
-        }
-        -- Your extension configuration goes here:
-        -- extension_name = {
-        --   extension_config_key = value,
-        -- }
-        -- please take a look at the readme of the extension you want to configure
+    colorscheme = {
+      enable_preview = true
+    }
+  },
+  extensions = {
+    fzy_native = {
+      override_generic_sorter = false,
+      override_file_sorter = true,
     },
+  }
 }
+
+-- Load Telescope extensions
+telescope.load_extension("fzy_native")
+
+telescope.load_extension("file_browser")
+
+telescope.load_extension("project")
+
+telescope.load_extension("git_diffs")
+
+local find_files_from_root = function()
+  local opts = {}
+  opts.cwd = require("utils").get_project_root()
+  builtin.find_files(opts)
+end
+
+local find_files_in_current_buffer = function()
+  builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown {
+    winblend = 15,
+    previewer = false,
+  })
+end
+
+local find_string_in_open_buffers = function()
+  builtin.live_grep({
+    prompt_title = "find string in open buffers...",
+    grep_open_files = true
+  })
+end
+
+-- with builtin keymaps
+vim.keymap.set("n", "ff", find_files_from_root, { desc = "[F]ind [F]iles" })
+vim.keymap.set("n", "<Leader>b", builtin.buffers, { desc = "[B]uffers" })
+vim.keymap.set("n", "<Leader>/", find_files_in_current_buffer, { desc = "[/] Fuzzily search in current buffer" })
+
+vim.keymap.set("n", "<Leader>r", builtin.oldfiles, { desc = "[R]ecently opened files" })
+vim.keymap.set("n", "<Leader>w", builtin.live_grep, { desc = "Find [W]ord" })
+vim.keymap.set("n", "<Leader>wo", find_string_in_open_buffers, { desc = "Find [W]ord in [O]pen Buffers" })
+vim.keymap.set("n", "<Leader>cs", builtin.colorscheme, { desc = "[C]olor [S]cheme" })
+vim.keymap.set("n", "<Leader>c", builtin.registers)
+
+-- with plugin keymaps
+vim.keymap.set("n", "<Leader>p", ":lua require('telescope').extensions.project.project{}<CR>")
+vim.keymap.set("n", "dv", ":lua require('telescope').extensions.git_diffs.diff_commits()<CR>")

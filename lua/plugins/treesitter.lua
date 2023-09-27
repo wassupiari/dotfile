@@ -9,12 +9,12 @@ ensure_installed = { "c", "java", "lua", "vim", "javascript", "css", "html", "js
 
 treesitter.setup({
     ensure_installed = ensure_installed,
-    sync_install = false,
+    sync_install = true,
     auto_install = true,
     highlight = {
         enable = true,
     },
-    indent = { enable = false },
+    indent = { enable = true },
     autopairs = { enable = true },
     autotag = { enable = true },
 })

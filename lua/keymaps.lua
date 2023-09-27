@@ -29,13 +29,20 @@ keymap("n", "<Leader>fs", "<CMD>w<CR>", opts)
 keymap("n", "<Leader>q", "<CMD>q<CR>", opts)
 keymap("n", "<Leader>qq", "<CMD>q!<CR>", opts)
 
+keymap("n","+","<C-a>",opts)
+keymap("n","-","<C-x>",opts)
+
+keymap("n", "<C-a>", "gg<S-v>G",opts)
+-- new tab
+keymap("n", "te", ":tabedit<Return>",opts)
+
+-- navigate tabs
+keymap("n", "tl", ":tabnext<Return>",opts)
+keymap("n", "th", ":tabNext<Return>",opts)
 
 
 
-
-
-
-
+keymap("n", "<Leader>rr", "<CMD>luafile %<CR>", opts)
 
 
 
@@ -46,7 +53,7 @@ keymap("n", "<C-j>", "<C-w>j", opts)
 keymap("n", "<C-k>", "<C-w>k", opts)
 keymap("n", "<C-l>", "<C-w>l", opts)
 
-keymap("n", "<leader>e", ":Lex 30<cr>", opts)
+
 
 -- Resize with arrows
 keymap("n", "<C-Up>", ":resize +2<CR>", opts)

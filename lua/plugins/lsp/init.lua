@@ -1,7 +1,11 @@
-local status_ok, _ = pcall(require, "lspconfig")
-if not status_ok then
-    return
+local lspconfig_is_ok, lspconfig = pcall(require, "lspconfig")
+if not lspconfig_is_ok then
+  return
 end
 
-require "plugins.lsp.mason"
-require("plugins.lsp.handlers").setup()
+local diagnostic_config = require("plugins.lsp.diagnostic.diagnostic")
+
+require("plugins.lsp.mason")
+require("plugins.lsp.lsp-handlers").setup(diagnostic_config)
+
+vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
