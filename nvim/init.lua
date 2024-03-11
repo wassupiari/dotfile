@@ -1,20 +1,20 @@
--- opt
-require("options")
-require("plug")
-require("keymaps")
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+vim.cmd("silent! intro")
 
--- from plugins/
-require("plugins.cmp")
-require("plugins.treesitter")
-require("plugins.telescope")
-require("plugins.nvim-tree")
-require("plugins.autopairs")
-require("plugins.comment")
-require("plugins.bufferline")
-require("plugins.lualine")
-require("plugins.alpha")
-require("plugins.markdown")
--- lsp
-require("plugins.lsp")
--- colorscheme
-require("plugins.colorscheme")
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+require("plugins")
+require("commands")
+require("core")
